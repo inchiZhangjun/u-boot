@@ -1474,7 +1474,6 @@ static void atmel_nand_init(struct atmel_nand_controller *nc,
 
 	mtd->dev->parent = nc->dev;
 	nand->controller = &nc->base;
-	nand->controller = &nc->base;
 
 	chip->cmd_ctrl = atmel_nand_cmd_ctrl;
 	chip->read_byte = atmel_nand_read_byte;
@@ -1601,10 +1600,13 @@ static struct atmel_nand *atmel_nand_create(struct atmel_nand_controller *nc,
 			nand->cs[i].rb.type = ATMEL_NAND_NATIVE_RB;
 			nand->cs[i].rb.id = val;
 		} else {
-			gpio_request_by_name_nodev(np, "rb-gpios", 0,
-						   &nand->cs[i].rb.gpio,
-						   GPIOD_IS_IN);
-			nand->cs[i].rb.type = ATMEL_NAND_GPIO_RB;
+			ret = gpio_request_by_name_nodev(np, "rb-gpios", 0,
+							 &nand->cs[i].rb.gpio,
+							 GPIOD_IS_IN);
+			if (ret && ret != -ENOENT)
+				dev_err(nc->dev, "Failed to get R/B gpio (err = %d)\n", ret);
+			if (!ret)
+				nand->cs[i].rb.type = ATMEL_NAND_GPIO_RB;
 		}
 
 		gpio_request_by_name_nodev(np, "cs-gpios", 0,

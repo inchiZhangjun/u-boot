@@ -123,6 +123,7 @@ F:	configs/apple_m1_defconfig
 F:	drivers/iommu/apple_dart.c
 F:	drivers/nvme/nvme_apple.c
 F:	drivers/pci/pcie_apple.c
+F:	drivers/phy/phy-apple-atc.c
 F:	drivers/pinctrl/pinctrl-apple.c
 F:	drivers/watchdog/apple_wdt.c
 F:	include/configs/apple.h
@@ -621,7 +622,7 @@ F:	drivers/ram/stm32mp1/
 F:	drivers/remoteproc/stm32_copro.c
 F:	drivers/reset/stm32-reset.c
 F:	drivers/rng/optee_rng.c
-F:	drivers/rng/stm32mp1_rng.c
+F:	drivers/rng/stm32_rng.c
 F:	drivers/rtc/stm32_rtc.c
 F:	drivers/serial/serial_stm32.*
 F:	drivers/spi/stm32_qspi.c
@@ -723,7 +724,10 @@ F:	drivers/usb/musb-new/ux500.c
 F:	drivers/video/mcde_simple.c
 
 ARM UNIPHIER
-S:	Orphan (Since 2020-09)
+M:	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+R:	Dai Okamura <okamura.dai@socionext.com>
+S:	Maintained
+F:	arch/arm/dts/uniphier-*
 F:	arch/arm/mach-uniphier/
 F:	configs/uniphier_*_defconfig
 N:	uniphier
@@ -1595,7 +1599,7 @@ T:	git https://source.denx.de/u-boot/custodians/u-boot-ubi.git
 F:	drivers/mtd/ubi/
 
 UFS
-M:	Bhupesh Sharma <bhupesh.sharma@linaro.org>
+M:	Bhupesh Sharma <bhupesh.linux@gmail.com>
 M:	Neha Malcom Francis <n-francis@ti.com>
 S:	Maintained
 F:	drivers/ufs/

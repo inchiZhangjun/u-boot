@@ -1480,9 +1480,6 @@ as set in stone, so Binman will ensure it doesn't change. Without this feature,
 repacking an entry might cause it to disobey the original constraints provided
 when it was created.
 
- Repacking an image involves
-
-.. _`BinmanLogging`:
 
 Signing FIT container with private key in an image
 --------------------------------------------------
@@ -1501,6 +1498,7 @@ If you want to sign and replace FIT container in place::
 which will sign FIT container with private key and replace it immediately
 inside your image.
 
+.. _`BinmanLogging`:
 
 Logging
 -------

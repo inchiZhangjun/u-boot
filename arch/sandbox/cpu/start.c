@@ -119,12 +119,7 @@ int sandbox_early_getopt_check(void)
 
 	os_exit(0);
 }
-
-static int sandbox_misc_init_f(void *ctx, struct event *event)
-{
-	return sandbox_early_getopt_check();
-}
-EVENT_SPY(EVT_MISC_INIT_F, sandbox_misc_init_f);
+EVENT_SPY_SIMPLE(EVT_MISC_INIT_F, sandbox_early_getopt_check);
 
 static int sandbox_cmdline_cb_help(struct sandbox_state *state, const char *arg)
 {
@@ -277,17 +272,9 @@ SANDBOX_CMDLINE_OPT_SHORT(program, 'p', 1, "U-Boot program name");
 static int sandbox_cmdline_cb_memory(struct sandbox_state *state,
 				     const char *arg)
 {
-	int err;
-
 	/* For now assume we always want to write it */
 	state->write_ram_buf = true;
 	state->ram_buf_fname = arg;
-
-	err = os_read_ram_buf(arg);
-	if (err) {
-		printf("Failed to read RAM buffer '%s': %d\n", arg, err);
-		return err;
-	}
 	state->ram_buf_read = true;
 
 	return 0;
@@ -517,6 +504,17 @@ int sandbox_main(int argc, char *argv[])
 	if (os_parse_args(state, argc, argv))
 		return 1;
 
+	if (state->ram_buf_fname) {
+		ret = os_read_ram_buf(state->ram_buf_fname);
+		if (ret) {
+			printf("Failed to read RAM buffer '%s': %d\n",
+			       state->ram_buf_fname, ret);
+		} else {
+			state->ram_buf_read = true;
+			log_debug("Read RAM buffer from '%s'\n", state->ram_buf_fname);
+		}
+	}
+
 	/* Remove old memory file if required */
 	if (state->ram_buf_rm && state->ram_buf_fname) {
 		os_unlink(state->ram_buf_fname);
@@ -524,9 +522,11 @@ int sandbox_main(int argc, char *argv[])
 		state->ram_buf_fname = NULL;
 	}
 
-	ret = sandbox_read_state(state, state->state_fname);
-	if (ret)
-		goto err;
+	if (state->read_state && state->state_fname) {
+		ret = sandbox_read_state(state, state->state_fname);
+		if (ret)
+			goto err;
+	}
 
 	if (state->handle_signals) {
 		ret = os_setup_signal_handlers();
@@ -534,7 +534,7 @@ int sandbox_main(int argc, char *argv[])
 			goto err;
 	}
 
-#if CONFIG_VAL(SYS_MALLOC_F_LEN)
+#if CONFIG_IS_ENABLED(SYS_MALLOC_F)
 	gd->malloc_base = CFG_MALLOC_F_ADDR;
 #endif
 #if CONFIG_IS_ENABLED(LOG)

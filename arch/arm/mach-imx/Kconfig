@@ -32,6 +32,7 @@ config IMX_RDC
 config IMX_BOOTAUX
 	bool "Support boot auxiliary core"
 	depends on ARCH_MX7 || ARCH_MX6 || ARCH_VF610 || ARCH_IMX8 || ARCH_IMX8M
+	select LIB_ELF
 	help
 	  bootaux [addr] to boot auxiliary core.
 
@@ -181,7 +182,7 @@ config IMX8_ROMAPI
 config SPL_IMX_ROMAPI_LOADADDR
 	hex "Default load address to load image through ROM API"
 	depends on IMX8_ROMAPI || SPL_BOOTROM_SUPPORT
-	default 0
+	default 0x0
 
 config IMX_DCD_ADDR
 	hex "DCD Blocks location on the image"
