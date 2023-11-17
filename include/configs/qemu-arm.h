@@ -7,7 +7,7 @@
 #define __CONFIG_H
 
 /* Physical memory map */
-#define CFG_SYS_SDRAM_BASE		0x40000000
+#define CFG_SYS_SDRAM_BASE		0x100F0000
 
 /* For timer, QEMU emulates an ARMv7/ARMv8 architected timer */
 
